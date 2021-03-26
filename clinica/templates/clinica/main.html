@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>saudedosguri</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <style media="screen">
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      overflow-x: hidden;
+    }
+    .list-inline {
+      display: flex;
+    }
+    .list-inline li {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="row h-75 justify-content-center align-items-center">
+      <div class="col-lg-6 col-md-10 col-sm-10">
+          <ul class="list-inline">
+            <li class="list-inline-item option">
+              <div class="card h-100 text-center">
+                <div class="card-header">
+                  <strong>Registro</strong>
+                </div>
+                <img class="w-25 mt-3 mx-auto" src="{% static 'images/register.png' %}">
+                <div class="card-body">
+                  <p class="card-text">Registro de produtos.</p>
+                  <a href="/register" class="btn btn-light">Vacina</a>
+                </div>
+              </div>
+            </li>
+            <li class="list-inline-item option">
+              <div class="card h-100 text-center">
+                <div class="card-header">
+                  <strong>Pesquisa</strong>
+                </div>
+                <img class="w-25 mt-3 mx-auto" src="{% static 'images/loupe.png' %}">
+                <div class="card-body">
+                  <p class="card-text">Pesquisa de produtos registrados.</p>
+                  <a href="/browse" class="btn btn-light">Vacina</a>
+                </div>
+              </div>
+            </li>
+            <li class="list-inline-item option">
+              <div class="card h-100 text-center">
+                <div class="card-header">
+                  <strong>Compra</strong>
+                </div>
+                <img class="w-25 mt-3 mx-auto" src="{% static 'images/cart.png' %}">
+                <div class="card-body">
+                  <p class="card-text">Compra de produtos registrados.</p>
+                  <a href="/buy" class="btn btn-light">Vacina</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+      </div>
+    </div>
+</body>
