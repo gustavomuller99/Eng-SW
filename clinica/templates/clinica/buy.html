@@ -1,0 +1,209 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>saudedosguri</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/buy.css' %}">
+  <style media="screen">
+    html,body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      padding: 0px;
+      overflow-x: hidden;
+    }
+    .list-inline {
+      display: flex;
+    }
+    .list-inline li {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8 col-sm-8 col-8 mt-3">
+      <div id="ajaxResult">
+
+      </div>
+    </div>
+  </div>
+  <div class="row ml-4">
+    <a href="/"><img style="width: 40px; height: auto;" class="mt-3 mx-auto" src="{% static 'images/arrow.png' %}"></a>
+  </div>
+  <div class="row mt-4 ml-2 mr-2">
+    <div class="col-lg-4 col-md-5 col-5 col-sm-5 col-xl-4">
+      <h5 class="ml-3">
+        <div class="row">
+          <button type="button" class="btn btn-sm btn-white mr-2" id="toggleSearch"><img style="width: 20px; height: auto;" class="mx-auto" src="{% static 'images/menu.png' %}"></button>
+          <div class="mt-1" id="title">
+            Procura
+            <img class="mx-auto" style="width: 15px; height: auto;" class="mx-auto" src="{% static 'images/loupe.png' %}">
+          </div>
+        </div>
+      </h5>
+      <div id="search" style="font-size:13px;">
+        <form class="text-center bg-light border border-secondary p-3" method="post" enctype="multipart/form-data" novalidate>
+          <fieldset>
+            {% csrf_token %}
+            <div>{{form.filter_short_description_field | as_crispy_field}}</div>
+            <div>{{ form.filter_long_description_field | as_crispy_field}}</div>
+            <div class="row">
+              <div class="col-6">{{ form.filter_min_quantity_field | as_crispy_field}}</div>
+              <div class="col-6">{{form.filter_max_quantity_field | as_crispy_field}}</div>
+            </div>
+            <div class="row">
+              <div class="col-6">{{ form.filter_min_unit_price_field | as_crispy_field}}</div>
+              <div class="col-6">{{form.filter_max_unit_price_field | as_crispy_field}}</div>
+            </div>
+            <button id="filter" type="submit" class="float-right btn btn-sm btn-light">Filtrar</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-6 col-sm-6 col-xl-4 ml-auto">
+      <h5 class="ml-3">
+        <div class="row">
+          <div class="mt-1">
+            Carrinho
+            <img class="mx-auto" style="width: 15px; height: auto;" class="mx-auto" src="{% static 'images/cart.png' %}">
+          </div>
+        </div>
+      </h5>
+      <div style="font-size:13px; height: 360px;" class="bg-light border border-secondary p-3">
+        <div style="height:90%;">
+          <div style="height: 95%; overflow:auto;">
+            <table  class="w-100 table">
+              <tbody class="w-100" id="cart">
+                <tr>
+                  <th style="padding: 4px;">Descrição</th>
+                  <th style="padding: 4px; width: 90px;">Quantidade</th>
+                  <th style="padding: 4px; width: 113px;">Preço unitário</th>
+                  <th style="padding: 4px; width: 113px;">Preço total</th>
+                  <th style="padding: 4px; width: 0px;">Remover</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row mx-1">
+          <div class="input-group input-group-sm" style="width: 70%;">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Valor total:</span>
+            </div>
+            <div class="border p-1 rounded-right bg-white" style="border: 10px solid #CED4DA;" >
+              <span class="mt-1" id="totalPrice">R$ 0.00</span>
+            </div>
+          </div>
+          <button type="button" id="buy" class="btn btn-sm btn-success ml-auto">Comprar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:13px;" class="row mt-4 mb-3 ml-4 mr-4">
+    <h5>Vacinas Filtradas:</h5>
+    <div style="overflow: auto; height: 750px;" class="table-responsive">
+      <table class="w-100 table" id="list">
+        <tbody class="w-100">
+          <tr>
+            <th style="padding: 4px;">Descrição</th>
+            <th style="padding: 4px;">Comentário</th>
+            <th style="padding: 4px; width: 90px;">Disponível</th>
+            <th style="padding: 4px; width: 113px;">Preço unitário</th>
+            <th style="padding: 4px; width: 0px;">Quantidade</th>
+            <th style="padding: 4px; width: 0px;">Adicionar</th>
+          </tr>
+          {% for obj in vaccine_database %}
+          <tr>
+            <td>{{obj.short_description}}</td>
+            <td>{{obj.long_description}}</td>
+            <td>{{obj.quantity}}</td>
+            <td>{{obj.unit_price}}</td>
+            <td><input style="width: 70px;" type="number" min="0" max="{{obj.quantity}}" value="0"></td>
+            <td class="text-center"><button type="button" style="padding: 0px;" class="add btn btn-sm btn-white"><img style="width: 15px; height: auto;" src="{% static 'images/plus.png' %}"></button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    var total_price = 0.00;
+    var added_items = 0;
+    var products = [];
+    var already_selected = new Array({{ vaccine_database | length }} + 1).fill(0);
+    $('#toggleSearch').on('click', function() {
+      var options = {};
+      $('#search').toggle('blind', options, 250);
+      $('#title').toggle('blind', options, 250);
+    });
+
+    $('.add').on('click', function() {
+      var parent = $(this).closest('tr');
+      var child = parent.find('td');
+      var short_description = child[0].innerHTML;
+      var long_description = child[1].innerHTML;
+      var available = child[2].innerHTML;
+      var unit_price = child[3].innerHTML;
+      var quantity = child[4].firstChild.value;
+      var row_index = parent[0].rowIndex;
+      if(quantity != 0 && !already_selected[row_index]) {
+        $('#cart').append(
+        '<tr id="add_'+added_items+'_'+row_index+'">'+
+          '<td style="padding: 4px;">'+short_description+'</td>'+
+          '<td style="padding: 4px; width: 90px;">'+quantity+'</td>'+
+          '<td style="padding: 4px; width: 113px;">'+unit_price+'</td>'+
+          '<td style="padding: 4px; width: 113px;">'+(quantity*unit_price).toFixed(2)+'</td>'+
+          '<td style="padding: 4px; width: 0px;" class="text-center"><button type="button" class="remove btn btn-sm btn-white" style="padding: 2px;"><img style="width: 10px; height: auto;" src=\'{% static "images/remove.png" %}\'></button></td>'+
+        '</tr>'
+        );
+        total_price = total_price + quantity*unit_price
+        var show_price = total_price.toFixed(2);
+        $('#totalPrice').html('R$ ' + show_price);
+        products.push([short_description, long_description, available, unit_price, quantity]);
+        added_items = added_items + 1;
+        already_selected[row_index] = 1;
+      }
+    });
+
+    $(document).on('click', '.remove', function() {
+      var parent = $(this).closest('tr');
+      var child = parent.find('td');
+      var price = child[3].innerHTML;
+      var id = parent.attr('id').split('_');
+      var products_index = id[1]; var row_index = id[2];
+      parent.remove();
+      total_price = total_price - price;
+      var show_price = total_price.toFixed(2);
+      $('#totalPrice').html('R$ ' + show_price);
+      products[products_index] = null;
+      already_selected[row_index] = 0;
+    });
+
+    $('#buy').on('click', function() {
+      var json_products = JSON.stringify(products);
+      $.ajax({
+        data: {
+          'json_products' : json_products,
+        },
+        url: 'buy/confirm_purchase',
+        type: 'POST',
+        success:function(data) {
+          $('#ajaxResult').html('<div style="padding:4px;" class="text-center alert alert-success alert-dismissible fade show"><button style="padding-top: 4px; padding-right: 10px;" type="button" data-dismiss="alert" class="close">×</button><span style="font-size: 15px;">Compra realizada com sucesso. A página será recarregada em 2 seg.</span></div>')
+          setTimeout(function() {$('#filter').click()}, 2000);
+        },
+        error:function(data) {}
+      });
+    })
+
+  </script>
+</body>
